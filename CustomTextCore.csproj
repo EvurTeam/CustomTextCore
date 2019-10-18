@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="DictionaryHelper.cs" />
     <Compile Include="FindResult.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="OperationData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

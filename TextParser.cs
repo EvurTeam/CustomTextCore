@@ -53,15 +53,82 @@ namespace CustomTextCore
                 return SomeTypes.Int;
             }
 
-            // todo
-            var re = new Regex("^\"(([^\"]|(\\\")) +)\"$", RegexOptions.Multiline);
+            var re = new Regex("^\"(([^\"]|(\\\"))+)\"$", RegexOptions.Multiline);
             if (re.Match(source).Success)
                 return SomeTypes.String;
             else
                 return SomeTypes.Unknown;
         }
 
-        
+        public static SomeOperations GetExpressionByString(string source, out OperationData data)
+        {
+            // дополнительные результаты парсинга TODO
+            data = new OperationData();
+            // первая часть выражения (присваинвание, вызов или ничего)
+            SomeOperations firstParam;
+            // вторая часть выражения (сложение, вычитание и т.д.)
+            SomeOperations secondParam = SomeOperations.Unknown;
+
+            var reCall = new Regex("^.+\\(.*\\)$");
+            var m = reCall.Match(source);
+            // если первая часть - вызов
+            if (m.Success)
+            {
+                firstParam = SomeOperations.Call;
+            }
+            else
+            {
+                var reSet = new Regex("[^=]+= *.+");
+                m = reSet.Match(source);
+                // если первая часть - присваивание
+                if (m.Success)
+                    firstParam = SomeOperations.Set;
+                else 
+                    return SomeOperations.Unknown;
+            }
+
+            var reOps = new Regex(".+ *([+\\-*\\/%]) *.+");
+            m = reOps.Match(source);
+            // если бинарные операции
+            if (m.Success)
+            {
+                var op = m.Groups[1].Value;
+                switch (op)
+                {
+                    case "+":
+                        secondParam = SomeOperations.Add;
+                        break;
+                    case "-":
+                        secondParam = SomeOperations.Sub;
+                        break;
+                    case "*":
+                        secondParam = SomeOperations.Mul;
+                        break;
+                    case "/":
+                        secondParam = SomeOperations.Div;
+                        break;
+                    case "%":
+                        secondParam = SomeOperations.Mod;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            // если не бинарные оперции
+            if (secondParam == SomeOperations.Unknown)
+            {
+                // TODO
+            }
+
+            if (secondParam == SomeOperations.Unknown)
+            {
+                if (firstParam == SomeOperations.Set)
+                    return SomeOperations.Unknown;
+                else
+                    return firstParam;
+            }
+            return firstParam | secondParam;
+        }
     }
 
     public enum SomeTypes
@@ -71,6 +138,21 @@ namespace CustomTextCore
         String,
         Int,
         Float,
+        Unknown
+    }
+
+    public enum SomeOperations
+    {
+        Set = 1,
+        Call = Set << 1,
+        PostfixIncrement = Set << 2,
+        PostfixDecrement = Set << 3,
+        Add = Set << 4,
+        Sub = Set << 5,
+        Mul = Set << 6,
+        Div = Set << 7,
+        Mod = Set << 8,
+
         Unknown
     }
 }

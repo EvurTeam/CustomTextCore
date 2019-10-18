@@ -10,17 +10,9 @@ namespace CustomTextCore
     {
         public static void Main()
         {
-            var a = "\"abc\"";
-            var b = "abc";
-            var c = "12,7";
-            var d = "63";
-            var e = "true";
-            Console.WriteLine(TextParser.GetTypeByString(a));
-            Console.WriteLine(TextParser.GetTypeByString(b));
-            Console.WriteLine(TextParser.GetTypeByString(c));
-            Console.WriteLine(TextParser.GetTypeByString(d));
-            Console.WriteLine(TextParser.GetTypeByString(e));
-
+            var a = "a(b / c)";
+            var result = TextParser.GetExpressionByString(a, out _);
+            Console.WriteLine($"{result.HasFlag(SomeOperations.Call)} {result.HasFlag(SomeOperations.Div)}");
             Console.ReadLine();
         }
     }

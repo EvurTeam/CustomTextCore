@@ -24,7 +24,12 @@ namespace CustomTextCore
 
         public bool Contains(FindResult fr)
         {
+            return fr.Start >= Start && fr.End <= End;
+        }
 
+        public bool Contains(int start, int end)
+        {
+            return start >= Start && end <= End;
         }
 
         public override string ToString()

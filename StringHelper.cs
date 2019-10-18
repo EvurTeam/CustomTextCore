@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CustomTextCore
@@ -122,6 +123,18 @@ namespace CustomTextCore
         }
 
         // -> string
+
+        public static string RegexReplace(this string s, string pattern, string replacement)
+        {
+            var re = new Regex(pattern);
+            return re.Replace(s, replacement);
+        }
+
+        public static string RemoveMultipleSpaces(this string s)
+        {
+            var re = new Regex("(\\s{2,})");
+            return re.Replace(s, " ");
+        }
 
         public static string Multiple(this string s, int val)
         {
